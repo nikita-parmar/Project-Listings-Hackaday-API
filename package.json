@@ -10,7 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "ejs": "^2.6.1",
     "express": "^4.16.4",
     "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "nightwatch": "^1.0.19"
   }
 }
