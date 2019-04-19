@@ -59,9 +59,9 @@
 		.website-heading{
 			text-align: center;
 		}
-		.skull{
-			height: 20px;
-			width: 20px;
+		.footers{
+			width: 100%;
+			margin: 0 auto;
 		}
 	</style>
 	<!-- font awesome -->
@@ -71,23 +71,36 @@
 <!-- 	<script src="vanilla.js"></script> -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+	
+	<!-- Simple pagination jquery and css -->
+	<script type="text/javascript" src="./simplePagination/jquery.simplePagination.js"></script>
+	<link type="text/css" rel="stylesheet" href="./simplePagination/simplePagination.css"/>
 	<script type="text/javascript">
 		
+		var total_items = 20916;
+		var per_page = 50;	 
+
 		$(document).ready(function(){
 			$.ajax({
 				url: "http://localhost:4000/projectlist/1", 
 				success: function(result){
+					total_items = result.body.per_page;
+					per_page = result.body.total;
+
 					display_projects(result);
 				}
 			});
 		});
 
 		function display_projects(result){
+			$(".onepagedata").remove();
+			
 			var html_string = ""
-			console.log(result.body.projects.length);
-			//console.log(typeof(result));
+			console.log(result.body.page);
 			var project_array = result.body.projects
+			html_string += "<div class='onepagedata'>"
 			for (var i = 0; i < project_array.length; i++) {
+
 					html_string += "<div class='card'>";
 					html_string += "<div class='card-data'>";
 					html_string += "<div class='leftdata'>"; 
@@ -95,9 +108,11 @@
 					html_string += "<p class='summary'>"+ project_array[i].summary + "</p>"; 
 					html_string += "<p class='tags'>Tags: </p>";
 					tag_array = project_array[i].tags;
-					for(var j=0; j<Math.min(tag_array.length,3) ;j++){
-						html_string += "<p class='tags'>"+ tag_array[j] + ", </p>"; 
-				 	}
+					if(tag_array!=null){
+						for(var j=0; j<Math.min(tag_array.length,3) ;j++){
+							html_string += "<p class='tags'>"+ tag_array[j] + ", </p>"; 
+					 	}
+					}
 
 					html_string += "</div>"; // div leftdata ends
 
@@ -112,13 +127,28 @@
 					html_string += "</div>"; //footer div ends
 
 					html_string += "</div>"; //card div ends
-					
-					console.log(html_string);
-			}
 
+			}
+			html_string += "</div>" //onepagedata div ends
 			$('.load-data').append(html_string); 
 	
 		}
+		//Pagination
+		$(function() {
+		    $("#pagination").pagination({
+		        items: total_items,
+		        itemsOnPage: per_page,
+		        cssStyle: 'light-theme',
+		        onPageClick: function(pageNumber, event){
+		        	$.ajax({
+		        		url: "http://localhost:4000/projectlist/"+pageNumber, 
+		        		success: function(result){
+		        			display_projects(result);
+		        		}
+		        	});
+		        }
+		    });
+		});
 
 	</script>
 
@@ -147,6 +177,10 @@
 
 		<div class="load-data">
 			
+		</div>
+
+		<div class="footers">
+			<div id="pagination"></div>
 		</div>
 	</div>
 </body>
