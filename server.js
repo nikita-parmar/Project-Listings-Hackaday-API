@@ -7,3 +7,5 @@ const port = process.env.PORT || 4000;
 // Creating a server and making it listen for requests a given port.
 const server = http.createServer(app);
 server.listen(port);
+
+console.log("Listening on http://localhost:" + port);

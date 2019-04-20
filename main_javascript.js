@@ -45,7 +45,7 @@ function display_projects(result){
 			html_string += "<p class='summary'>"+ project_array[i].summary + "</p>"; 	
 			html_string += "<div class='projecturl'><a href=" +  project_array[i].url + ">Go to the Project</a></div>";			
 			
-	html_string += "<div class='tooltip'>Owner:" + project_array[i].owner_id;
+			html_string += "<div class='tooltip'>Owner:" + project_array[i].owner_id;
 			html_string += "<div class='tooltipload'>Loading...</div>";
 			html_string += "<div class='tooltiptext'></div>";
 			html_string +=	"</div>"; //end of owner tooltip 
@@ -64,9 +64,7 @@ function display_projects(result){
 			html_string += "</div>"; // div leftdata ends
 
 			html_string += "<div class='rightimg'><img src='" + project_array[i].image_url + "' style='height:100%; width:100%;'></div>";//image div	
-			html_string += "</div>"; // card-data div
-
-			
+			html_string += "</div>"; // card-data div		
 		
 			html_string += "<div class='footerdiv footer-element'>"; 
 			html_string += "<p class='footer-element'><i class='fas fa-users'></i> " + project_array[i].followers + " </p>";
