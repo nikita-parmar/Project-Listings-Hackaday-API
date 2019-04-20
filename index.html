@@ -45,9 +45,6 @@
 		}
 		.keys{
 			text-align: center;
-			border-style: groove;
-			border-color:blue;
-			/*border: 2px;*/
 			display: inline-block;
 			margin: 0 auto;
 			width: 100%; 
@@ -63,6 +60,15 @@
 			width: 100%;
 			margin: 0 auto;
 		}
+		
+		.user_detail{
+			background: #999;
+			color: #fff;
+			width: 300px;
+			opacity: 0.9
+		}
+		
+
 	</style>
 	<!-- font awesome -->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
@@ -71,7 +77,8 @@
 <!-- 	<script src="vanilla.js"></script> -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
-	
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 	<!-- Simple pagination jquery and css -->
 	<script type="text/javascript" src="./simplePagination/jquery.simplePagination.js"></script>
 	<link type="text/css" rel="stylesheet" href="./simplePagination/simplePagination.css"/>
@@ -86,30 +93,49 @@
 				success: function(result){
 					total_items = result.body.per_page;
 					per_page = result.body.total;
-
 					display_projects(result);
 				}
 			});
 		});
 
+		//Pagination
+		$(function() {
+		    $("#pagination").pagination({
+		        items: total_items,
+		        itemsOnPage: per_page,
+		        cssStyle: 'light-theme',
+		        onPageClick: function(pageNumber, event){
+		        	$.ajax({
+		        		url: "http://localhost:4000/projectlist/"+pageNumber, 
+		        		success: function(result){
+		        			display_projects(result);
+		        		}
+		        	});
+		        }
+		    });
+		});
+
 		function display_projects(result){
 			$(".onepagedata").remove();
-			
-			var html_string = ""
+			var html_string = "";
 			console.log(result.body.page);
-			var project_array = result.body.projects
-			html_string += "<div class='onepagedata'>"
+			var project_array = result.body.projects;
+			html_string += "<div class='onepagedata'>";
 			for (var i = 0; i < project_array.length; i++) {
-
 					html_string += "<div class='card'>";
 					html_string += "<div class='card-data'>";
 					html_string += "<div class='leftdata'>"; 
 					html_string += "<h3 class='name'>"+ project_array[i].name + "</h3>"; 
-					html_string += "<p class='summary'>"+ project_array[i].summary + "</p>"; 
+					html_string += "<p class='summary'>"+ project_array[i].summary + "</p>"; 	
+					html_string += "<div class='tooltip'>Owner:" + project_array[i].owner_id;
+					html_string += "<div class='tooltipload'>Loading...</div>";
+					html_string += "<div class='tooltiptext'></div>";
+					html_string +=	"</div>"; //end of owner tooltip 
+
 					html_string += "<p class='tags'>Tags: </p>";
 					tag_array = project_array[i].tags;
 					if(tag_array!=null){
-						for(var j=0; j<Math.min(tag_array.length,3) ;j++){
+						for(var j=0; j<Math.min(tag_array.length,5) ;j++){
 							html_string += "<p class='tags'>"+ tag_array[j] + ", </p>"; 
 					 	}
 					}
@@ -131,33 +157,63 @@
 			}
 			html_string += "</div>" //onepagedata div ends
 			$('.load-data').append(html_string); 
-	
+			$(".tooltipload").hide(); 
+			$(".tooltiptext").hide(); 		
 		}
-		//Pagination
-		$(function() {
-		    $("#pagination").pagination({
-		        items: total_items,
-		        itemsOnPage: per_page,
-		        cssStyle: 'light-theme',
-		        onPageClick: function(pageNumber, event){
-		        	$.ajax({
-		        		url: "http://localhost:4000/projectlist/"+pageNumber, 
-		        		success: function(result){
-		        			display_projects(result);
-		        		}
-		        	});
-		        }
+	
+		//Owner Info on Hover and Leave
+		$(document).on('mouseenter','.tooltip', function (event) {
+		    var tooltiptext_obj = $(this).children().filter('.tooltiptext');
+		    var tooltipload_obj = $(this).children().filter('.tooltipload');
+		    $(tooltipload_obj).show(); 
+		    
+		    $(".user_detail").remove();
+		    console.log("On hover");
+		    
+		    var owner_id = $(this).clone().children().remove().end().text().substring(6);
+		    console.log(owner_id);
+		    var owner_url = "http://localhost:4000/userdetail/"+owner_id;
+		    $.ajax({
+		    	url: owner_url,
+		    	success: function(result){
+		    		showtooltip(result);
+		    	}
 		    });
+
+			$(tooltiptext_obj).show(); 
+			$(tooltipload_obj).hide(); 
+
+		}).on('mouseleave','.tooltip',  function(){
+		    $(".user_detail").remove();
+		    var tooltiptext_obj = $(this).children().filter('.tooltiptext');
+		    var tooltipload_obj = $(this).children().filter('.tooltipload');
+		    
+		    $(tooltipload_obj).hide(); 
+		  	$(tooltiptext_obj).hide(); 
+		  
 		});
+
+		function showtooltip(result){			
+			html_string = "<div class='user_detail'>";
+			html_string += "<div class='username'>Username: "+ result.body.username +"</div>";
+			html_string += "<div class='screenname'>Screen name: "+ result.body.screen_name +"</div>";
+			html_string += "<div class='rank'>Rank: "+ result.body.rank +"</div>";
+			html_string += "<div class='aboutme'>"+ result.body.about_me +"</div>";
+			html_string += "</div>";
+			$('.tooltiptext').append(html_string);
+		}
+		function hidetooltip(){
+			$(".tooltiptext").hide();
+			$(".tooltipload").hide();
+		}
 
 	</script>
 
 </head>
 <body>
-
 	<div class="maindiv">
 		<div class="headers">
-			<h2 class="website-heading" >Hackaday API Project Listing</h2>
+			<h2 class="website-heading">Hackaday API Project Listing</h2>
 			<div class="keys">
 				<b>Keys:</b>
 				<div class="icons-inline">
@@ -175,9 +231,7 @@
 			</div>
 		</div>
 
-		<div class="load-data">
-			
-		</div>
+		<div class="load-data"></div>
 
 		<div class="footers">
 			<div id="pagination"></div>
