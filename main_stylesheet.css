@@ -1,0 +1,79 @@
+.website-heading{
+	text-align: center;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  width: 80%;
+  margin: 20 auto;
+  padding: 10px;
+  height: 200px;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.leftdata{
+	float: left;
+	display: inline-block;
+	width: 70%;
+	height: 100%;	
+}
+
+.rightimg{
+	float:left;
+	display: inline-block;
+	width: 30%;
+	height: 100%;
+}
+
+.footerdiv{
+	width: 100%; 
+	
+}
+
+.tags{
+	float:left;
+}
+
+.footer-element{
+	float: left;
+}
+
+.footerdiv{
+	display: block;
+	width: 100%;
+}
+
+.card-data{
+	height: 80%;
+	width: 100%;
+}
+
+.keys{
+	text-align: center;
+	display: inline-block;
+	margin: 0 auto;
+	width: 100%; 
+	font-size: 15px;
+}
+
+.icons-inline{
+	display: inline-block;	
+}
+
+.footers{
+	width: 100%;
+	margin: 0 auto;
+}
+
+.user_detail{
+	background: #999;
+	color: #fff;
+	width: 300px;
+	opacity: 0.9
+}
+
+
