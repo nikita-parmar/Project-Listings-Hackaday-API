@@ -1,10 +1,22 @@
 # Project-Listings-Hackaday-API
 
-Download node.js from
-https://nodejs.org/en/download/
+## Download and Installation
 
-Install express package using
+1. Download node.js from https://nodejs.org/en/download/
+
+2. Install express package using:
+
+```bash
 npm install express
+```
 
-Download all the files and you are good to run it on your system!
+## Usage
+
+1. Clone the repository 
+
+2. Run the following command:
+
+```bash
+node server.js 
+```
 
